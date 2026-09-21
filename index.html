@@ -335,7 +335,7 @@ function togglePlay() {
   playback=setInterval(()=>{
     if(selected<rows.length-1) selectRow(selected+1);
     else stop();
-  },3500);
+  },2000);
   el('restart').disabled=false;
 }
 el('life-table').addEventListener('click',event=>{
