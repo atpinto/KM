@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaplan–Meier · a step at a time</title>
 <style>
-  :root { color-scheme: light; --ink:#172b3a; --muted:#536370; --blue:#075bb5; --pale:#eaf3ff; --line:#d7dfe5; --event:#bd3a22; --censor:#754c0b; }
+  :root { color-scheme: light; --ink:#172b3a; --muted:#536370; --blue:#075bb5; --pale:#eaf3ff; --line:#d7dfe5; --event:#bd3a22; --censor:#754c0b; --popup:#fff7e3; --popup-line:#dcc795; }
   * { box-sizing:border-box; }
   body { margin:0; background:#fff; color:var(--ink); font:20px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-variant-numeric:tabular-nums; }
   main { max-width:1800px; margin:auto; padding:22px 30px 14px; }
@@ -14,7 +14,7 @@
   .subtitle { color:var(--muted); font-size:18px; margin:6px 0 0; }
   button { font:inherit; border:1px solid #a4b1bc; border-radius:6px; color:var(--ink); background:white; min-height:44px; padding:6px 15px; cursor:pointer; touch-action:manipulation; }
   button:hover { background:#eef3f7; }
-  button:focus-visible,summary:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+  button:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
   button:disabled { opacity:.35; cursor:default; }
   .primary { color:white; background:var(--blue); border-color:var(--blue); min-width:105px; }
   .primary:hover { background:#084d95; }
@@ -40,50 +40,51 @@
   .censor-key { color:var(--censor); font-size:25px; line-height:1; font-weight:700; }
   .risk-key { color:var(--blue); font-size:24px; line-height:1; }
   .table-wrap { overflow-x:auto; }
-  table { width:100%; min-width:530px; border-collapse:collapse; font-size:22px; text-align:right; }
-  th { height:46px; font-size:18px; font-weight:500; line-height:1.1; color:var(--muted); text-align:right; padding:0 5px 8px; vertical-align:bottom; }
+  table { width:100%; min-width:530px; border-collapse:collapse; font-size:22px; text-align:center; }
+  th { height:46px; font-size:18px; font-weight:500; line-height:1.1; color:var(--muted); text-align:center; padding:0 5px 8px; vertical-align:bottom; }
   td { height:35px; border-top:1px solid #e7ebef; padding:0 5px; }
-  th:first-child,td:first-child { text-align:left; }
   tbody tr { cursor:pointer; }
   tbody tr:hover { background:#f3f6f9; }
   tbody tr.selected { background:var(--pale); color:#064b95; font-weight:650; }
   tbody tr.selected td:first-child { box-shadow:inset 4px 0 var(--blue); }
-  .row-button { min-height:35px; width:100%; padding:0 8px; text-align:left; border:0; background:transparent; color:inherit; font-weight:inherit; border-radius:0; }
+  .row-button { min-height:35px; width:100%; padding:0 8px; text-align:center; border:0; background:transparent; color:inherit; font-weight:inherit; border-radius:0; }
   .row-button:hover { background:transparent; }
   .unrevealed { color:#727d87; font-weight:400; }
   .table-note { font-size:18px; margin:9px 0 0; color:var(--muted); }
-  .calculation { border-top:2px solid var(--ink); margin-top:17px; padding-top:14px; display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; }
-  .equation { font-size:32px; font-weight:500; line-height:1.35; display:flex; align-items:center; flex-wrap:wrap; gap:9px; }
+  .table-section { position:relative; }
+  .calculation { position:absolute; right:0; z-index:5; width:min(100%,560px); padding:14px 18px; border:1px solid var(--popup-line); border-radius:8px; background:var(--popup); box-shadow:0 6px 24px #172b3a2e; pointer-events:none; transition:top .35s ease; }
+  .calculation::before { content:""; position:absolute; right:60px; width:14px; height:14px; background:var(--popup); border:1px solid var(--popup-line); transform:rotate(45deg); }
+  .calculation.below::before { top:-8px; border-right:0; border-bottom:0; }
+  .calculation.above::before { bottom:-8px; border-left:0; border-top:0; }
+  @media(prefers-reduced-motion:reduce) { .calculation{transition:none} }
+  .equation { font-size:26px; font-weight:500; line-height:1.35; display:flex; align-items:center; flex-wrap:wrap; gap:9px; }
   .equation .answer { color:var(--blue); font-weight:650; }
   .fraction { display:inline-flex; flex-direction:column; text-align:center; vertical-align:middle; font-size:.8em; line-height:1.08; margin:0 3px; }
   .fraction span:first-child { border-bottom:2px solid currentColor; padding:0 6px 3px; }
   .fraction span:last-child { padding-top:3px; }
-  .calc-note { font-size:20px; color:var(--muted); margin-top:7px; }
-  .risk-change { text-align:right; font-size:20px; }
-  .risk-change strong { font-size:28px; font-weight:650; }
+  .calc-note { font-size:18px; color:var(--muted); margin-top:4px; }
+  .risk-change { font-size:18px; color:var(--muted); margin-top:8px; padding-top:8px; border-top:1px solid var(--line); }
+  .risk-change strong { color:var(--ink); font-weight:650; }
   footer { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; margin-top:18px; color:var(--muted); font-size:16px; }
-  details { max-width:920px; }
-  summary { cursor:pointer; }
-  details p { margin:8px 0; font-size:18px; }
   a { color:var(--blue); }
   .keys { white-space:nowrap; }
   .credit { margin:16px 0 0; color:var(--muted); font-size:16px; }
   .credit a { font-weight:700; text-decoration-thickness:2px; text-underline-offset:3px; }
   .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
-  @media(min-width:1500px) { body{font-size:22px} h1{font-size:36px} .chart{height:450px} td{height:40px} .row-button{min-height:40px} table{font-size:25px} th{font-size:20px} .equation{font-size:38px} }
-  @media(min-width:1180px) and (max-height:820px) { main{padding:12px 22px} header{margin-bottom:10px} h1{font-size:28px} .subtitle{font-size:16px;margin-top:3px} .toolbar{padding:8px 0} .board{margin-top:12px;gap:20px} .chart{height:336px} td{height:30px} .row-button{min-height:30px} th{height:36px} table{font-size:22px} .calculation{margin-top:10px;padding-top:10px} .equation{font-size:30px} .calc-note{margin-top:4px} footer{margin-top:10px} }
-  @media(max-width:1179px) { .board{grid-template-columns:1fr 1fr} .follow-panel{grid-column:1/-1} .follow-panel .chart{height:360px} .calculation{grid-template-columns:1fr} .risk-change{text-align:left} }
-  @media(max-width:700px) { main{padding:18px 16px} header{align-items:flex-start} h1{font-size:27px} #fullscreen{font-size:17px;padding:6px 9px} .toolbar{align-items:flex-start;flex-direction:column-reverse} .board{grid-template-columns:1fr;gap:25px} .follow-panel{grid-column:auto} .chart{height:355px} .equation{font-size:27px} footer{flex-direction:column} .step{margin-left:10px} }
-  @media print { main{padding:0} .toolbar,#fullscreen,.keys,details{display:none} .board{grid-template-columns:1fr 1fr 1fr;gap:14px} .follow-panel{grid-column:auto} .chart{height:350px!important} h1{font-size:25px} table{font-size:18px} th{font-size:15px} .equation{font-size:26px} }
+  @media(min-width:1500px) { body{font-size:22px} h1{font-size:36px} .chart{height:450px} td{height:40px} .row-button{min-height:40px} table{font-size:25px} th{font-size:20px} .equation{font-size:30px} }
+  @media(min-width:1180px) and (max-height:820px) { main{padding:12px 22px} header{margin-bottom:10px} h1{font-size:28px} .subtitle{font-size:16px;margin-top:3px} .toolbar{padding:8px 0} .board{margin-top:12px;gap:20px} .chart{height:336px} td{height:30px} .row-button{min-height:30px} th{height:36px} table{font-size:22px} .equation{font-size:24px} footer{margin-top:10px} }
+  @media(max-width:1179px) { .board{grid-template-columns:1fr 1fr} .follow-panel{grid-column:1/-1} .follow-panel .chart{height:360px} }
+  @media(max-width:700px) { main{padding:18px 16px} header{align-items:flex-start} h1{font-size:27px} #fullscreen{font-size:17px;padding:6px 9px} .toolbar{align-items:flex-start;flex-direction:column-reverse} .board{grid-template-columns:1fr;gap:25px} .follow-panel{grid-column:auto} .chart{height:355px} .equation{font-size:22px} footer{flex-direction:column} .step{margin-left:10px} }
+  @media print { main{padding:0} .toolbar,#fullscreen,.keys{display:none} .board{grid-template-columns:1fr 1fr 1fr;gap:14px} .follow-panel{grid-column:auto} .chart{height:350px!important} h1{font-size:25px} table{font-size:18px} th{font-size:15px} .equation{font-size:22px} }
 
   .heading-help { display:block; width:100%; border:0; border-radius:0; padding:4px 0; background:transparent; color:inherit; font:inherit; text-align:inherit; text-decoration:underline dotted; text-underline-offset:4px; line-height:1.25; }
   .heading-help:hover,.heading-help:focus-visible { color:var(--blue); background:var(--pale); }
   .probability-heading { width:155px; }
   .heading-formula { display:inline-block; margin-top:5px; font-weight:650; }
-  .column-tooltip { position:fixed; z-index:100; width:360px; max-width:calc(100vw - 24px); padding:16px 18px; border:1px solid #a4b1bc; border-radius:6px; background:white; color:var(--ink); box-shadow:0 6px 24px #172b3a26; font-size:20px; line-height:1.4; text-align:left; }
+  .column-tooltip { position:fixed; z-index:100; width:360px; max-width:calc(100vw - 24px); padding:16px 18px; border:1px solid var(--popup-line); border-radius:6px; background:var(--popup); color:var(--ink); box-shadow:0 6px 24px #172b3a26; font-size:20px; line-height:1.4; text-align:left; }
   .column-tooltip[hidden] { display:none; }
   .tooltip-formula { display:block; margin-top:9px; font-size:22px; font-weight:600; color:var(--blue); }
-  dialog { max-width:850px; width:calc(100% - 40px); max-height:85vh; border:1px solid #a4b1bc; border-radius:8px; padding:28px 32px; color:var(--ink); background:white; }
+  dialog { max-width:850px; width:calc(100% - 40px); max-height:85vh; border:1px solid var(--popup-line); border-radius:8px; padding:28px 32px; color:var(--ink); background:var(--popup); }
   dialog::backdrop { background:#172b3a80; }
   dialog h2 { font-size:28px; }
   dialog p { font-size:22px; line-height:1.6; }
@@ -111,7 +112,7 @@
       <h2 id="follow-title">Patient follow-up</h2>
       <p class="panel-note" id="risk-label"></p>
       <svg id="follow" class="chart" role="img" aria-label="Follow-up of 21 patients"></svg>
-      <div class="legend"><span><b class="event-key">×</b> Event</span><span><b class="censor-key">|</b> Censored</span><span><b class="risk-key">●</b> At risk</span></div>
+      <div class="legend"><span><b class="event-key">×</b> Death</span><span><b class="censor-key">|</b> Censored</span><span><b class="risk-key">●</b> At risk</span></div>
     </section>
     <section aria-labelledby="survival-title">
       <h2 id="survival-title">Survival curve</h2>
@@ -119,7 +120,7 @@
       <svg id="survival" class="chart" role="img" aria-label="Kaplan–Meier survival estimate"></svg>
       <div class="legend"><span><b class="censor-key">|</b> Censored</span></div>
     </section>
-    <section aria-labelledby="table-title">
+    <section class="table-section" aria-labelledby="table-title">
       <h2 id="table-title">Life table</h2>
       <p class="panel-note">Select a time to reveal the curve.</p>
       <div class="table-wrap">
@@ -127,29 +128,23 @@
           <thead><tr>
             <th scope="col"><button class="heading-help" type="button" data-help="help-time" aria-describedby="help-time">Week<br>t</button></th>
             <th scope="col"><button class="heading-help" type="button" data-help="help-risk" aria-describedby="help-risk">At risk<br>n</button></th>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-events" aria-describedby="help-events">Events<br>e</button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-events" aria-describedby="help-events">Deaths<br>d</button></th>
             <th scope="col"><button class="heading-help" type="button" data-help="help-censored" aria-describedby="help-censored">Cens.<br>c</button></th>
-            <th scope="col" class="probability-heading"><button class="heading-help" type="button" data-help="help-probability" aria-describedby="help-probability">Prob of not having the event<br><span class="heading-formula">1 − e/n</span></button></th>
+            <th scope="col" class="probability-heading"><button class="heading-help" type="button" data-help="help-probability" aria-describedby="help-probability">Prob of surviving<br><span class="heading-formula">1 − d/n</span></button></th>
             <th scope="col"><button class="heading-help" type="button" data-help="help-survival" aria-describedby="help-survival">Survival<br>Ŝ(t)</button></th>
           </tr></thead>
           <tbody id="life-table"></tbody>
         </table>
       </div>
       <p class="table-note">At risk = just before this time. Hover or tap a heading for its formula.</p>
+      <div class="calculation" id="calculation" role="note" aria-label="Selected calculation">
+        <div class="equation" id="equation"></div><div class="calc-note" id="calc-note"></div>
+        <div class="risk-change" id="risk-change"></div>
+      </div>
     </section>
   </div>
-  <section class="calculation" aria-label="Selected calculation">
-    <div><div class="equation" id="equation"></div><div class="calc-note" id="calc-note"></div></div>
-    <div class="risk-change" id="risk-change"></div>
-  </section>
   <div class="sr-only" id="announcement" aria-live="polite" aria-atomic="true"></div>
   <footer>
-    <details><summary>Teaching notes</summary>
-      <p>Supplied data; “+” denotes censoring. All patients enter at week 0. The filled blue dots identify the risk set immediately before the selected time; faint lines show the full observed follow-up. The curve includes events at the selected time. Censoring removes a patient from later risk sets without a drop in survival.</p>
-      <p>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − eᵢ/nᵢ). Tied events share one denominator. Patients censored at an event time are included in that time’s risk set. Percentages are rounded only for display; calculations use full precision.</p>
-      <p>The example assumes independent, non-informative censoring. The curve stops at the last observed follow-up; after week 35, nobody remains under observation.</p>
-      <p>Method reference: <a href="https://search.r-project.org/CRAN/refmans/epitools/html/kapmeier.html" target="_blank" rel="noreferrer">R epitools: product-limit estimator</a>.</p>
-    </details>
     <span class="keys">← → Step &nbsp;·&nbsp; Space Play / pause</span>
   </footer>
   <p class="credit">Developed by <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> and Codex.</p>
@@ -157,17 +152,17 @@
 
 <dialog id="problem-description" aria-labelledby="problem-title">
   <h2 id="problem-title">Problem description</h2>
-  <p>The remission times for 42 patients with acute leukemia were reported by Freireich et al (1963) in a clinical trial undertaken to assess the ability of 6-mercaptopurine (6-MP) to maintain remission. Each patient was randomized to receive 6-MP or a placebo. The study was terminated after one year. The following remission times in weeks, were recorded for the 6-MP group:</p>
-  <p><strong>6-MP (21 patients):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+</p>
-  <p>“+” denotes a censored observation. The simulation shows the 6-MP group.</p>
+  <p>A group of 21 patients with acute leukemia were followed from the start of treatment to estimate their survival. Patients were followed for at most 35 weeks; the outcome is death from any cause. Patients still alive at their last visit, or lost to follow-up, are censored at that time. The following survival times, in weeks, were recorded:</p>
+  <p><strong>Survival times (21 patients):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+</p>
+  <p>“+” denotes a censored observation: the patient was alive when last seen. This is an illustrative example; the times are adapted from the remission times of the 6-mercaptopurine group in Freireich et al. (1963).</p>
   <form method="dialog"><button class="primary" autofocus>Close</button></form>
 </dialog>
-<div id="help-time" class="column-tooltip" role="tooltip" hidden>The recorded week of an event or censoring, measured from the start of remission.<span class="tooltip-formula">tᵢ = observed follow-up time (weeks)</span></div>
-<div id="help-risk" class="column-tooltip" role="tooltip" hidden>Patients still under observation and without an event just before this week. Include patients with an event or censoring at this week.<span class="tooltip-formula">nᵢ = number with follow-up ≥ tᵢ</span></div>
-<div id="help-events" class="column-tooltip" role="tooltip" hidden>Events at this week. Tied events are counted together; censored observations are excluded.<span class="tooltip-formula">eᵢ = number of events at tᵢ</span></div>
-<div id="help-censored" class="column-tooltip" role="tooltip" hidden>Patients whose observation ends at this week without an observed event. They leave the next risk set.<span class="tooltip-formula">cᵢ = number censored at tᵢ<br>n after tᵢ = nᵢ − eᵢ − cᵢ</span></div>
-<div id="help-probability" class="column-tooltip" role="tooltip" hidden>Conditional probability of avoiding the event at this week, given being at risk just before it. With no events, it equals 1.<span class="tooltip-formula">pᵢ = 1 − eᵢ/nᵢ = (nᵢ − eᵢ)/nᵢ</span></div>
-<div id="help-survival" class="column-tooltip" role="tooltip" hidden>Cumulative probability of remaining in remission beyond this week. Multiply the conditional probabilities through this time.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − eᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − eᵢ/nᵢ)</span></div>
+<div id="help-time" class="column-tooltip" role="tooltip" hidden>The recorded week of a death or censoring, measured from the start of follow-up.<span class="tooltip-formula">tᵢ = observed follow-up time (weeks)</span></div>
+<div id="help-risk" class="column-tooltip" role="tooltip" hidden>Patients still alive and under observation just before this week. Include patients who die or are censored at this week.<span class="tooltip-formula">nᵢ = number with follow-up ≥ tᵢ</span></div>
+<div id="help-events" class="column-tooltip" role="tooltip" hidden>Deaths at this week. Tied deaths are counted together; censored observations are excluded.<span class="tooltip-formula">dᵢ = number of deaths at tᵢ</span></div>
+<div id="help-censored" class="column-tooltip" role="tooltip" hidden>Patients whose observation ends at this week without an observed death. They leave the next risk set.<span class="tooltip-formula">cᵢ = number censored at tᵢ<br>n after tᵢ = nᵢ − dᵢ − cᵢ</span></div>
+<div id="help-probability" class="column-tooltip" role="tooltip" hidden>Conditional probability of surviving this week, given being alive and at risk just before it. With no deaths, it equals 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span></div>
+<div id="help-survival" class="column-tooltip" role="tooltip" hidden>Cumulative probability of surviving beyond this week. Multiply the conditional probabilities through this time.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span></div>
 <script>
 'use strict';
 // Supplied observations in order; '+' denotes right censoring.
@@ -293,13 +288,22 @@ function renderText() {
     el('risk-change').innerHTML=`<strong>${patients.length}</strong> at risk at baseline`;
   } else {
     el('equation').innerHTML=`<span>Ŝ(${row.time}) = ${percent(row.before)} ×</span><span>(1 −</span><span class="fraction"><span>${row.d}</span><span>${row.n}</span></span><span>) =</span><span class="answer">${percent(row.s)}</span>`;
-    el('calc-note').textContent=row.d?`${row.d===1?'1 event':row.d+' tied events'} among ${row.n} at risk${row.c?`; ${row.c} censored`:''}.`:`${row.c} censored · no event · survival stays the same.`;
+    el('calc-note').textContent=row.d?`${row.d===1?'1 death':row.d+' tied deaths'} among ${row.n} at risk${row.c?`; ${row.c} censored`:''}.`:`${row.c} censored · no death · survival stays the same.`;
     el('risk-change').innerHTML=`<strong>${row.n} − ${row.d} − ${row.c} = ${row.remaining}</strong><br>under observation after week ${row.time}`;
   }
   el('previous').disabled=selected===0;
   el('next').disabled=selected===rows.length-1;
   el('restart').disabled=selected===0&&!playback;
-  el('announcement').textContent=`Week ${row.time}. ${row.n} at risk just before this time, ${row.d} events, ${row.c} censored. Survival ${percent(row.s)}. ${row.remaining} remain under observation.`;
+  el('announcement').textContent=`Week ${row.time}. ${row.n} at risk just before this time, ${row.d} deaths, ${row.c} censored. Survival ${percent(row.s)}. ${row.remaining} remain under observation.`;
+}
+// Anchor the calculation callout under the selected row, or above it near the end of the table.
+function placeCalculation() {
+  const box=el('calculation'), section=box.parentElement.getBoundingClientRect();
+  const row=el('life-table').querySelector(`tr[data-index="${selected}"]`).getBoundingClientRect();
+  const tableBottom=el('life-table').getBoundingClientRect().bottom;
+  const below=row.bottom+box.offsetHeight+12<=tableBottom;
+  box.classList.toggle('below',below);box.classList.toggle('above',!below);
+  box.style.top=(below?row.bottom-section.top+10:row.top-section.top-box.offsetHeight-10)+'px';
 }
 function cancelAnimation() { if(animation!==null) cancelAnimationFrame(animation); animation=null; }
 function selectRow(index,animate=true) {
@@ -307,7 +311,7 @@ function selectRow(index,animate=true) {
   selected=Math.max(0,Math.min(rows.length-1,index));
   cancelAnimation();
   const focused=el('life-table').contains(document.activeElement);
-  renderTable(); renderText();
+  renderTable(); renderText(); placeCalculation();
   if(focused) el('life-table').querySelector(`tr[data-index="${selected}"] button`).focus({preventScroll:true});
   const target=rows[selected].time;
   if(!animate||motion.matches||selected!==old+1) { drawFollow(target);drawCurve(target);return; }
@@ -399,7 +403,7 @@ el('problem-link').addEventListener('click',event=>{
   event.preventDefault();stop();hideHelp();el('problem-description').showModal();
 });
 
-new ResizeObserver(()=>{cancelAnimation();drawFollow(rows[selected].time);drawCurve(rows[selected].time);}).observe(document.querySelector('.board'));
+new ResizeObserver(()=>{cancelAnimation();placeCalculation();drawFollow(rows[selected].time);drawCurve(rows[selected].time);}).observe(document.querySelector('.board'));
 selectRow(0,false);
 </script>
 </body>
