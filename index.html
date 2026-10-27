@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kaplan–Meier · a step at a time</title>
+<title data-i18n="pageTitle">Kaplan–Meier · a step at a time</title>
 <style>
   :root { color-scheme: light; --ink:#172b3a; --muted:#536370; --blue:#075bb5; --pale:#eaf3ff; --line:#d7dfe5; --event:#bd3a22; --censor:#754c0b; --popup:#fff7e3; --popup-line:#dcc795; }
   * { box-sizing:border-box; }
@@ -90,54 +90,69 @@
   dialog p { font-size:22px; line-height:1.6; }
   dialog form { display:flex; justify-content:flex-end; margin-top:24px; }
   @media print { .column-tooltip,.heading-help + span,#problem-link,dialog{display:none} }
+  .header-actions { display:flex; align-items:center; gap:14px; }
+  .languages { display:flex; gap:4px; }
+  .lang { min-height:0; padding:5px; border-color:transparent; line-height:0; opacity:.5; }
+  .lang:hover { opacity:1; }
+  .lang[aria-pressed="true"] { opacity:1; border-color:#a4b1bc; }
+  .lang svg { width:30px; height:20px; border-radius:2px; box-shadow:0 0 0 1px #172b3a26; }
+  @media(max-width:700px) { .header-actions{flex-direction:column-reverse;align-items:flex-end;gap:8px} }
+  @media print { .languages{display:none} }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <div><h1>Kaplan–Meier estimator</h1><p class="subtitle">21 patients · time in weeks · <a id="problem-link" href="#problem-description">Problem description</a></p></div>
-    <button id="fullscreen" type="button">Full screen</button>
+    <div><h1 data-i18n="heading">Kaplan–Meier estimator</h1><p class="subtitle"><span data-i18n="subtitle">21 patients · time in weeks</span> · <a id="problem-link" href="#problem-description" data-i18n="problemLink">Problem description</a></p></div>
+    <div class="header-actions">
+      <div class="languages" role="group" aria-label="Language">
+        <button type="button" class="lang" data-lang="en" lang="en" aria-label="English" title="English"><svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="uk-cross"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0h60v30H0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#uk-cross)" stroke="#c8102e" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"/></svg></button>
+        <button type="button" class="lang" data-lang="es" lang="es" aria-label="Español" title="Español"><svg viewBox="0 0 3 2" aria-hidden="true"><path d="M0 0h3v2H0z" fill="#aa151b"/><path d="M0 .5h3v1H0z" fill="#f1bf00"/></svg></button>
+        <button type="button" class="lang" data-lang="pt" lang="pt" aria-label="Português" title="Português"><svg viewBox="0 0 600 400" aria-hidden="true"><path d="M0 0h600v400H0z" fill="#da291c"/><path d="M0 0h240v400H0z" fill="#046a38"/><circle cx="240" cy="200" r="80" fill="none" stroke="#ffe900" stroke-width="18"/><path d="M205 150h70v60a35 35 0 0 1-70 0z" fill="#fff" stroke="#da291c" stroke-width="12"/></svg></button>
+      </div>
+      <button id="fullscreen" type="button">Full screen</button>
+    </div>
   </header>
-  <nav class="toolbar" aria-label="Presentation controls">
+  <nav class="toolbar" aria-label="Presentation controls" data-i18n-aria="controls">
     <div class="transport">
-      <button id="restart" type="button" aria-label="Return to time zero">Restart</button>
-      <button id="previous" type="button">← Previous</button>
+      <button id="restart" type="button" aria-label="Return to time zero" data-i18n="restart" data-i18n-aria="restartLabel">Restart</button>
+      <button id="previous" type="button" data-i18n="previous">← Previous</button>
       <button id="play" class="primary" type="button" aria-pressed="false">Play</button>
-      <button id="next" type="button">Next →</button>
+      <button id="next" type="button" data-i18n="next">Next →</button>
     </div>
     <div class="time" id="time-label">Week 0 <span class="step">1 / 17</span></div>
   </nav>
   <div class="board">
     <section class="follow-panel" aria-labelledby="follow-title">
-      <h2 id="follow-title">Patient follow-up</h2>
+      <h2 id="follow-title" data-i18n="followTitle">Patient follow-up</h2>
       <p class="panel-note" id="risk-label"></p>
-      <svg id="follow" class="chart" role="img" aria-label="Follow-up of 21 patients"></svg>
-      <div class="legend"><span><b class="event-key">×</b> Death</span><span><b class="censor-key">|</b> Censored</span><span><b class="risk-key">●</b> At risk</span></div>
+      <svg id="follow" class="chart" role="img" aria-label="Follow-up of 21 patients" data-i18n-aria="followLabel"></svg>
+      <div class="legend"><span><b class="event-key">×</b> <span data-i18n="death">Death</span></span><span><b class="censor-key">|</b> <span data-i18n="censored">Censored</span></span><span><b class="risk-key">●</b> <span data-i18n="atRisk">At risk</span></span></div>
     </section>
     <section aria-labelledby="survival-title">
-      <h2 id="survival-title">Survival curve</h2>
+      <h2 id="survival-title" data-i18n="survivalTitle">Survival curve</h2>
       <p class="panel-note" id="survival-label"></p>
-      <svg id="survival" class="chart" role="img" aria-label="Kaplan–Meier survival estimate"></svg>
-      <div class="legend"><span><b class="censor-key">|</b> Censored</span></div>
+      <svg id="survival" class="chart" role="img" aria-label="Kaplan–Meier survival estimate" data-i18n-aria="survivalLabel"></svg>
+      <div class="legend"><span><b class="censor-key">|</b> <span data-i18n="censored">Censored</span></span></div>
     </section>
     <section class="table-section" aria-labelledby="table-title">
-      <h2 id="table-title">Life table</h2>
-      <p class="panel-note">Select a time to reveal the curve.</p>
+      <h2 id="table-title" data-i18n="tableTitle">Life table</h2>
+      <p class="panel-note" data-i18n="tablePrompt">Select a time to reveal the curve.</p>
       <div class="table-wrap">
-        <table aria-label="Kaplan–Meier life table">
+        <table aria-label="Kaplan–Meier life table" data-i18n-aria="tableLabel">
           <thead><tr>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-time" aria-describedby="help-time">Week<br>t</button></th>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-risk" aria-describedby="help-risk">At risk<br>n</button></th>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-events" aria-describedby="help-events">Deaths<br>d</button></th>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-censored" aria-describedby="help-censored">Cens.<br>c</button></th>
-            <th scope="col" class="probability-heading"><button class="heading-help" type="button" data-help="help-probability" aria-describedby="help-probability">Prob of surviving<br><span class="heading-formula">1 − d/n</span></button></th>
-            <th scope="col"><button class="heading-help" type="button" data-help="help-survival" aria-describedby="help-survival">Survival<br>Ŝ(t)</button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-time" aria-describedby="help-time" data-i18n="colTime">Week<br>t</button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-risk" aria-describedby="help-risk" data-i18n="colRisk">At risk<br>n</button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-events" aria-describedby="help-events" data-i18n="colEvents">Deaths<br>d</button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-censored" aria-describedby="help-censored" data-i18n="colCensored">Cens.<br>c</button></th>
+            <th scope="col" class="probability-heading"><button class="heading-help" type="button" data-help="help-probability" aria-describedby="help-probability" data-i18n="colProbability">Prob of surviving<br><span class="heading-formula">1 − d/n</span></button></th>
+            <th scope="col"><button class="heading-help" type="button" data-help="help-survival" aria-describedby="help-survival" data-i18n="colSurvival">Survival<br>Ŝ(t)</button></th>
           </tr></thead>
           <tbody id="life-table"></tbody>
         </table>
       </div>
-      <p class="table-note">At risk = just before this time. Hover or tap a heading for its formula.</p>
-      <div class="calculation" id="calculation" role="note" aria-label="Selected calculation">
+      <p class="table-note" data-i18n="tableNote">At risk = just before this time. Hover or tap a heading for its formula.</p>
+      <div class="calculation" id="calculation" role="note" aria-label="Selected calculation" data-i18n-aria="calculationLabel">
         <div class="equation" id="equation"></div><div class="calc-note" id="calc-note"></div>
         <div class="risk-change" id="risk-change"></div>
       </div>
@@ -145,26 +160,126 @@
   </div>
   <div class="sr-only" id="announcement" aria-live="polite" aria-atomic="true"></div>
   <footer>
-    <span class="keys">← → Step &nbsp;·&nbsp; Space Play / pause</span>
+    <span class="keys" data-i18n="keys">← → Step &nbsp;·&nbsp; Space Play / pause</span>
   </footer>
-  <p class="credit">Developed by <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> and Codex.</p>
+  <p class="credit" data-i18n="credit">Developed by <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> and Codex.</p>
 </main>
 
 <dialog id="problem-description" aria-labelledby="problem-title">
-  <h2 id="problem-title">Problem description</h2>
-  <p>Twenty-one adults aged 70 or older with newly diagnosed acute myeloid leukemia (AML), judged not fit for intensive chemotherapy, started lower-intensity treatment. Patients were recruited over several months and the data were analysed at a fixed date, so follow-up ranges up to 35 weeks. The outcome is death from any cause. Patients still alive at the analysis date, or lost to follow-up, are censored at their last contact. The following survival times, in weeks from the start of treatment, were recorded:</p>
-  <p><strong>Survival times (21 patients):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+</p>
-  <p>“+” denotes a censored observation: the patient was alive when last seen. This is an illustrative example; the times are adapted from the remission times of the 6-mercaptopurine group in Freireich et al. (1963).</p>
-  <form method="dialog"><button class="primary" autofocus>Close</button></form>
+  <h2 id="problem-title" data-i18n="problemTitle">Problem description</h2>
+  <p data-i18n="problemText">Twenty-one adults aged 70 or older with newly diagnosed acute myeloid leukemia (AML), judged not fit for intensive chemotherapy, started lower-intensity treatment. Patients were recruited over several months and the data were analysed at a fixed date, so follow-up ranges up to 35 weeks. The outcome is death from any cause. Patients still alive at the analysis date, or lost to follow-up, are censored at their last contact. The following survival times, in weeks from the start of treatment, were recorded:</p>
+  <p data-i18n="problemTimes"><strong>Survival times (21 patients):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+</p>
+  <p data-i18n="problemNote">“+” denotes a censored observation: the patient was alive when last seen. This is an illustrative example; the times are adapted from the remission times of the 6-mercaptopurine group in Freireich et al. (1963).</p>
+  <form method="dialog"><button class="primary" autofocus data-i18n="close">Close</button></form>
 </dialog>
-<div id="help-time" class="column-tooltip" role="tooltip" hidden>The recorded week of a death or censoring, measured from the start of follow-up.<span class="tooltip-formula">tᵢ = observed follow-up time (weeks)</span></div>
-<div id="help-risk" class="column-tooltip" role="tooltip" hidden>Patients still alive and under observation just before this week. Include patients who die or are censored at this week.<span class="tooltip-formula">nᵢ = number with follow-up ≥ tᵢ</span></div>
-<div id="help-events" class="column-tooltip" role="tooltip" hidden>Deaths at this week. Tied deaths are counted together; censored observations are excluded.<span class="tooltip-formula">dᵢ = number of deaths at tᵢ</span></div>
-<div id="help-censored" class="column-tooltip" role="tooltip" hidden>Patients whose observation ends at this week without an observed death. They leave the next risk set.<span class="tooltip-formula">cᵢ = number censored at tᵢ<br>n after tᵢ = nᵢ − dᵢ − cᵢ</span></div>
-<div id="help-probability" class="column-tooltip" role="tooltip" hidden>Conditional probability of surviving this week, given being alive and at risk just before it. With no deaths, it equals 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span></div>
-<div id="help-survival" class="column-tooltip" role="tooltip" hidden>Cumulative probability of surviving beyond this week. Multiply the conditional probabilities through this time.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span></div>
+<div id="help-time" class="column-tooltip" role="tooltip" hidden data-i18n="helpTime">The recorded week of a death or censoring, measured from the start of follow-up.<span class="tooltip-formula">tᵢ = observed follow-up time (weeks)</span></div>
+<div id="help-risk" class="column-tooltip" role="tooltip" hidden data-i18n="helpRisk">Patients still alive and under observation just before this week. Include patients who die or are censored at this week.<span class="tooltip-formula">nᵢ = number with follow-up ≥ tᵢ</span></div>
+<div id="help-events" class="column-tooltip" role="tooltip" hidden data-i18n="helpEvents">Deaths at this week. Tied deaths are counted together; censored observations are excluded.<span class="tooltip-formula">dᵢ = number of deaths at tᵢ</span></div>
+<div id="help-censored" class="column-tooltip" role="tooltip" hidden data-i18n="helpCensored">Patients whose observation ends at this week without an observed death. They leave the next risk set.<span class="tooltip-formula">cᵢ = number censored at tᵢ<br>n after tᵢ = nᵢ − dᵢ − cᵢ</span></div>
+<div id="help-probability" class="column-tooltip" role="tooltip" hidden data-i18n="helpProbability">Conditional probability of surviving this week, given being alive and at risk just before it. With no deaths, it equals 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span></div>
+<div id="help-survival" class="column-tooltip" role="tooltip" hidden data-i18n="helpSurvival">Cumulative probability of surviving beyond this week. Multiply the conditional probabilities through this time.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span></div>
 <script>
 'use strict';
+// Interface text by language. Static keys match data-i18n / data-i18n-aria attributes in the markup.
+const I18N = {
+  en: {
+    pageTitle:'Kaplan–Meier · a step at a time', heading:'Kaplan–Meier estimator', subtitle:'21 patients · time in weeks', problemLink:'Problem description',
+    controls:'Presentation controls', restart:'Restart', restartLabel:'Return to time zero', previous:'← Previous', next:'Next →', play:'Play', pause:'Pause',
+    fullscreen:'Full screen', exitFullscreen:'Exit full screen', fullscreenFallback:'Use browser full screen',
+    followTitle:'Patient follow-up', followLabel:'Follow-up of 21 patients', death:'Death', censored:'Censored', atRisk:'At risk',
+    survivalTitle:'Survival curve', survivalLabel:'Kaplan–Meier survival estimate', tableTitle:'Life table', tablePrompt:'Select a time to reveal the curve.', tableLabel:'Kaplan–Meier life table',
+    colTime:'Week<br>t', colRisk:'At risk<br>n', colEvents:'Deaths<br>d', colCensored:'Cens.<br>c', colProbability:'Prob of surviving<br><span class="heading-formula">1 − d/n</span>', colSurvival:'Survival<br>Ŝ(t)',
+    tableNote:'At risk = just before this time. Hover or tap a heading for its formula.', calculationLabel:'Selected calculation',
+    keys:'← → Step &nbsp;·&nbsp; Space Play / pause',
+    credit:'Developed by <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> and Codex.',
+    problemTitle:'Problem description',
+    problemText:'Twenty-one adults aged 70 or older with newly diagnosed acute myeloid leukemia (AML), judged not fit for intensive chemotherapy, started lower-intensity treatment. Patients were recruited over several months and the data were analysed at a fixed date, so follow-up ranges up to 35 weeks. The outcome is death from any cause. Patients still alive at the analysis date, or lost to follow-up, are censored at their last contact. The following survival times, in weeks from the start of treatment, were recorded:',
+    problemTimes:'<strong>Survival times (21 patients):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+',
+    problemNote:'“+” denotes a censored observation: the patient was alive when last seen. This is an illustrative example; the times are adapted from the remission times of the 6-mercaptopurine group in Freireich et al. (1963).',
+    close:'Close',
+    helpTime:'The recorded week of a death or censoring, measured from the start of follow-up.<span class="tooltip-formula">tᵢ = observed follow-up time (weeks)</span>',
+    helpRisk:'Patients still alive and under observation just before this week. Include patients who die or are censored at this week.<span class="tooltip-formula">nᵢ = number with follow-up ≥ tᵢ</span>',
+    helpEvents:'Deaths at this week. Tied deaths are counted together; censored observations are excluded.<span class="tooltip-formula">dᵢ = number of deaths at tᵢ</span>',
+    helpCensored:'Patients whose observation ends at this week without an observed death. They leave the next risk set.<span class="tooltip-formula">cᵢ = number censored at tᵢ<br>n after tᵢ = nᵢ − dᵢ − cᵢ</span>',
+    helpProbability:'Conditional probability of surviving this week, given being alive and at risk just before it. With no deaths, it equals 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span>',
+    helpSurvival:'Cumulative probability of surviving beyond this week. Multiply the conditional probabilities through this time.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span>',
+    decimal:'.', timeAxis:'Time (weeks)', survivalAxis:'Survival (%)', week:t=>`Week ${t}`, rowLabel:(t,base)=>`Week ${t}${base?', baseline':''}`,
+    followTitleText:(n,t,ids)=>`Patient follow-up. ${n} patients at risk just before week ${t}: ${ids}.`,
+    curveTitleText:(t,s)=>`Kaplan–Meier survival curve through week ${t}: survival ${s}.`,
+    riskLabel:(n,t)=>`<strong>${n} at risk</strong> just before week ${t}`,
+    baselineNote:n=>`All ${n} patients start under observation.`, baselineRisk:n=>`<strong>${n}</strong> at risk at baseline`,
+    deathNote:(d,n,c)=>`${d===1?'1 death':d+' tied deaths'} among ${n} at risk${c?`; ${c} censored`:''}.`,
+    censorNote:c=>`${c} censored · no death · survival stays the same.`,
+    remaining:t=>`under observation after week ${t}`,
+    announcement:(t,n,d,c,s,r)=>`Week ${t}. ${n} at risk just before this time, ${d} deaths, ${c} censored. Survival ${s}. ${r} remain under observation.`,
+  },
+  es: {
+    pageTitle:'Kaplan–Meier · paso a paso', heading:'Estimador de Kaplan–Meier', subtitle:'21 pacientes · tiempo en semanas', problemLink:'Descripción del problema',
+    controls:'Controles de presentación', restart:'Reiniciar', restartLabel:'Volver al tiempo cero', previous:'← Anterior', next:'Siguiente →', play:'Reproducir', pause:'Pausa',
+    fullscreen:'Pantalla completa', exitFullscreen:'Salir de pantalla completa', fullscreenFallback:'Usa la pantalla completa del navegador',
+    followTitle:'Seguimiento de pacientes', followLabel:'Seguimiento de 21 pacientes', death:'Muerte', censored:'Censurado', atRisk:'En riesgo',
+    survivalTitle:'Curva de supervivencia', survivalLabel:'Estimación de supervivencia de Kaplan–Meier', tableTitle:'Tabla de vida', tablePrompt:'Selecciona un tiempo para revelar la curva.', tableLabel:'Tabla de vida de Kaplan–Meier',
+    colTime:'Semana<br>t', colRisk:'En riesgo<br>n', colEvents:'Muertes<br>d', colCensored:'Cens.<br>c', colProbability:'Prob. de sobrevivir<br><span class="heading-formula">1 − d/n</span>', colSurvival:'Supervivencia<br>Ŝ(t)',
+    tableNote:'En riesgo = justo antes de este tiempo. Pasa el cursor o toca un encabezado para ver su fórmula.', calculationLabel:'Cálculo seleccionado',
+    keys:'← → Avanzar &nbsp;·&nbsp; Espacio Reproducir / pausa',
+    credit:'Desarrollado por <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> y Codex.',
+    problemTitle:'Descripción del problema',
+    problemText:'Veintiún adultos de 70 años o más con leucemia mieloide aguda (LMA) recién diagnosticada, considerados no aptos para quimioterapia intensiva, iniciaron un tratamiento de menor intensidad. Los pacientes se reclutaron a lo largo de varios meses y los datos se analizaron en una fecha fija, por lo que el seguimiento llega hasta 35 semanas. El desenlace es la muerte por cualquier causa. Los pacientes que seguían vivos en la fecha del análisis, o que se perdieron durante el seguimiento, se censuran en su último contacto. Se registraron los siguientes tiempos de supervivencia, en semanas desde el inicio del tratamiento:',
+    problemTimes:'<strong>Tiempos de supervivencia (21 pacientes):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+',
+    problemNote:'«+» indica una observación censurada: el paciente estaba vivo la última vez que se le vio. Es un ejemplo ilustrativo; los tiempos están adaptados de los tiempos de remisión del grupo de 6-mercaptopurina de Freireich et al. (1963).',
+    close:'Cerrar',
+    helpTime:'La semana registrada de una muerte o censura, medida desde el inicio del seguimiento.<span class="tooltip-formula">tᵢ = tiempo de seguimiento observado (semanas)</span>',
+    helpRisk:'Pacientes aún vivos y en observación justo antes de esta semana. Incluye a los pacientes que mueren o se censuran en esta semana.<span class="tooltip-formula">nᵢ = número con seguimiento ≥ tᵢ</span>',
+    helpEvents:'Muertes en esta semana. Las muertes empatadas se cuentan juntas; las observaciones censuradas se excluyen.<span class="tooltip-formula">dᵢ = número de muertes en tᵢ</span>',
+    helpCensored:'Pacientes cuya observación termina en esta semana sin una muerte observada. Salen del siguiente conjunto de riesgo.<span class="tooltip-formula">cᵢ = número de censurados en tᵢ<br>n después de tᵢ = nᵢ − dᵢ − cᵢ</span>',
+    helpProbability:'Probabilidad condicional de sobrevivir a esta semana, dado que se está vivo y en riesgo justo antes. Sin muertes, es igual a 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span>',
+    helpSurvival:'Probabilidad acumulada de sobrevivir más allá de esta semana. Se multiplican las probabilidades condicionales hasta este tiempo.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span>',
+    decimal:',', timeAxis:'Tiempo (semanas)', survivalAxis:'Supervivencia (%)', week:t=>`Semana ${t}`, rowLabel:(t,base)=>`Semana ${t}${base?', inicio':''}`,
+    followTitleText:(n,t,ids)=>`Seguimiento de pacientes. ${n} pacientes en riesgo justo antes de la semana ${t}: ${ids}.`,
+    curveTitleText:(t,s)=>`Curva de supervivencia de Kaplan–Meier hasta la semana ${t}: supervivencia ${s}.`,
+    riskLabel:(n,t)=>`<strong>${n} en riesgo</strong> justo antes de la semana ${t}`,
+    baselineNote:n=>`Los ${n} pacientes empiezan en observación.`, baselineRisk:n=>`<strong>${n}</strong> en riesgo al inicio`,
+    deathNote:(d,n,c)=>`${d===1?'1 muerte':d+' muertes empatadas'} entre ${n} en riesgo${c?`; ${c} ${c===1?'censurado':'censurados'}`:''}.`,
+    censorNote:c=>`${c} ${c===1?'censurado':'censurados'} · ninguna muerte · la supervivencia no cambia.`,
+    remaining:t=>`en observación después de la semana ${t}`,
+    announcement:(t,n,d,c,s,r)=>`Semana ${t}. ${n} en riesgo justo antes de este tiempo, ${d} muertes, ${c} censurados. Supervivencia ${s}. ${r} siguen en observación.`,
+  },
+  pt: {
+    pageTitle:'Kaplan–Meier · passo a passo', heading:'Estimador de Kaplan–Meier', subtitle:'21 doentes · tempo em semanas', problemLink:'Descrição do problema',
+    controls:'Controlos de apresentação', restart:'Reiniciar', restartLabel:'Voltar ao tempo zero', previous:'← Anterior', next:'Seguinte →', play:'Reproduzir', pause:'Pausa',
+    fullscreen:'Ecrã inteiro', exitFullscreen:'Sair do ecrã inteiro', fullscreenFallback:'Use o ecrã inteiro do navegador',
+    followTitle:'Seguimento dos doentes', followLabel:'Seguimento de 21 doentes', death:'Óbito', censored:'Censurado', atRisk:'Em risco',
+    survivalTitle:'Curva de sobrevivência', survivalLabel:'Estimativa de sobrevivência de Kaplan–Meier', tableTitle:'Tabela de vida', tablePrompt:'Selecione um tempo para revelar a curva.', tableLabel:'Tabela de vida de Kaplan–Meier',
+    colTime:'Semana<br>t', colRisk:'Em risco<br>n', colEvents:'Óbitos<br>d', colCensored:'Cens.<br>c', colProbability:'Prob. de sobreviver<br><span class="heading-formula">1 − d/n</span>', colSurvival:'Sobrevivência<br>Ŝ(t)',
+    tableNote:'Em risco = imediatamente antes deste tempo. Passe o cursor ou toque num cabeçalho para ver a fórmula.', calculationLabel:'Cálculo selecionado',
+    keys:'← → Avançar &nbsp;·&nbsp; Espaço Reproduzir / pausa',
+    credit:'Desenvolvido por <a href="https://profiles.sydney.edu.au/armando.teixeira-pinto" target="_blank" rel="noreferrer">Armando Teixeira-Pinto</a> e Codex.',
+    problemTitle:'Descrição do problema',
+    problemText:'Vinte e um adultos com 70 ou mais anos, com leucemia mieloide aguda (LMA) recém-diagnosticada e considerados não elegíveis para quimioterapia intensiva, iniciaram um tratamento de menor intensidade. Os doentes foram recrutados ao longo de vários meses e os dados foram analisados numa data fixa, pelo que o seguimento vai até 35 semanas. O desfecho é a morte por qualquer causa. Os doentes ainda vivos na data da análise, ou perdidos para seguimento, são censurados no último contacto. Foram registados os seguintes tempos de sobrevivência, em semanas desde o início do tratamento:',
+    problemTimes:'<strong>Tempos de sobrevivência (21 doentes):</strong> 6, 6, 6, 7, 10, 13, 16, 22, 23, 6+, 9+, 10+, 11+, 17+, 19+, 20+, 25+, 32+, 32+, 34+, 35+',
+    problemNote:'«+» indica uma observação censurada: o doente estava vivo no último contacto. Trata-se de um exemplo ilustrativo; os tempos foram adaptados dos tempos de remissão do grupo da 6-mercaptopurina de Freireich et al. (1963).',
+    close:'Fechar',
+    helpTime:'A semana registada de um óbito ou censura, medida desde o início do seguimento.<span class="tooltip-formula">tᵢ = tempo de seguimento observado (semanas)</span>',
+    helpRisk:'Doentes ainda vivos e em observação imediatamente antes desta semana. Inclui os doentes que morrem ou são censurados nesta semana.<span class="tooltip-formula">nᵢ = número com seguimento ≥ tᵢ</span>',
+    helpEvents:'Óbitos nesta semana. Os óbitos empatados contam-se em conjunto; as observações censuradas são excluídas.<span class="tooltip-formula">dᵢ = número de óbitos em tᵢ</span>',
+    helpCensored:'Doentes cuja observação termina nesta semana sem óbito observado. Saem do conjunto de risco seguinte.<span class="tooltip-formula">cᵢ = número de censurados em tᵢ<br>n após tᵢ = nᵢ − dᵢ − cᵢ</span>',
+    helpProbability:'Probabilidade condicional de sobreviver a esta semana, dado estar vivo e em risco imediatamente antes. Sem óbitos, é igual a 1.<span class="tooltip-formula">pᵢ = 1 − dᵢ/nᵢ = (nᵢ − dᵢ)/nᵢ</span>',
+    helpSurvival:'Probabilidade acumulada de sobreviver para além desta semana. Multiplicam-se as probabilidades condicionais até este tempo.<span class="tooltip-formula">Ŝ(tᵢ) = Ŝ(tᵢ⁻) × (1 − dᵢ/nᵢ)<br>Ŝ(t) = ∏<sub>tᵢ ≤ t</sub> (1 − dᵢ/nᵢ)</span>',
+    decimal:',', timeAxis:'Tempo (semanas)', survivalAxis:'Sobrevivência (%)', week:t=>`Semana ${t}`, rowLabel:(t,base)=>`Semana ${t}${base?', início':''}`,
+    followTitleText:(n,t,ids)=>`Seguimento dos doentes. ${n} doentes em risco imediatamente antes da semana ${t}: ${ids}.`,
+    curveTitleText:(t,s)=>`Curva de sobrevivência de Kaplan–Meier até à semana ${t}: sobrevivência ${s}.`,
+    riskLabel:(n,t)=>`<strong>${n} em risco</strong> imediatamente antes da semana ${t}`,
+    baselineNote:n=>`Os ${n} doentes começam em observação.`, baselineRisk:n=>`<strong>${n}</strong> em risco no início`,
+    deathNote:(d,n,c)=>`${d===1?'1 óbito':d+' óbitos empatados'} entre ${n} em risco${c?`; ${c} ${c===1?'censurado':'censurados'}`:''}.`,
+    censorNote:c=>`${c} ${c===1?'censurado':'censurados'} · nenhum óbito · a sobrevivência mantém-se.`,
+    remaining:t=>`em observação após a semana ${t}`,
+    announcement:(t,n,d,c,s,r)=>`Semana ${t}. ${n} em risco imediatamente antes deste tempo, ${d} óbitos, ${c} censurados. Sobrevivência ${s}. ${r} continuam em observação.`,
+  },
+};
+// English is the default; ?lang= in the URL wins over a remembered choice.
+function storedLanguage() { try { return localStorage.getItem('km-lang'); } catch { return null; } }
+let lang=[new URLSearchParams(location.search).get('lang'),storedLanguage()].find(code=>code in I18N)||'en';
+const t=key=>I18N[lang][key];
 // Supplied observations in order; '+' denotes right censoring.
 const observations = ['6', '6', '6', '6+', '7', '9+', '10', '10+', '11+',
   '13', '16', '17+', '19+', '20+', '22', '23', '25+', '32+', '32+', '34+', '35+'];
@@ -190,7 +305,7 @@ const maxTime = Math.max(...patients.map(p=>p.time));
 document.documentElement.style.setProperty('--cohort-chart-height', `${patients.length * 28 + 85}px`);
 const timeTicks = [0, 10, 20, 30, maxTime];
 const el = id=>document.getElementById(id);
-const percent = n=>(n*100).toFixed(1)+'%';
+const percent = n=>(n*100).toFixed(1).replace('.',t('decimal'))+'%';
 const ns = 'http://www.w3.org/2000/svg';
 let selected=0, playback=null, animation=null;
 const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -218,7 +333,7 @@ function endpoint(svg,x,y,event,opacity=1) {
 }
 function drawFollow(time) {
   const svg=el('follow'), row=rows[selected];
-  const {w,h}=prepare(svg,`Patient follow-up. ${row.n} patients at risk just before week ${row.time}: ${patients.filter(p=>p.time>=row.time).map(p=>p.id).join(', ')}.`);
+  const {w,h}=prepare(svg,t('followTitleText')(row.n,row.time,patients.filter(p=>p.time>=row.time).map(p=>p.id).join(', ')));
   const left=55,right=w-15,top=25,bottom=h-60;
   const x=t=>left+(right-left)*t/maxTime;
   const y=i=>top+(bottom-top)*(i+.5)/patients.length;
@@ -238,11 +353,11 @@ function drawFollow(time) {
   });
   line(svg,x(time),top-10,x(time),bottom+8,{class:'guide'});
   line(svg,left,bottom+8,right,bottom+8,{class:'axis'});
-  label(svg,(left+right)/2,h-5,'Time (weeks)',{'text-anchor':'middle',class:'axis-label'});
+  label(svg,(left+right)/2,h-5,t('timeAxis'),{'text-anchor':'middle',class:'axis-label'});
 }
 function drawCurve(time,dropProgress=1) {
   const svg=el('survival'), current=rows[selected];
-  const {w,h}=prepare(svg,`Kaplan–Meier survival curve through week ${current.time}: survival ${percent(current.s)}.`);
+  const {w,h}=prepare(svg,t('curveTitleText')(current.time,percent(current.s)));
   const left=61,right=w-17,top=25,bottom=h-60;
   const x=t=>left+(right-left)*t/maxTime, y=s=>bottom-(bottom-top)*s;
   for(const tick of [0,.25,.5,.75,1]) {
@@ -255,8 +370,8 @@ function drawCurve(time,dropProgress=1) {
   }
   line(svg,left,top,left,bottom,{class:'axis'});
   line(svg,left,bottom,right,bottom,{class:'axis'});
-  label(svg,left,top-10,'Survival (%)',{class:'axis-label'});
-  label(svg,(left+right)/2,h-5,'Time (weeks)',{'text-anchor':'middle',class:'axis-label'});
+  label(svg,left,top-10,t('survivalAxis'),{class:'axis-label'});
+  label(svg,(left+right)/2,h-5,t('timeAxis'),{'text-anchor':'middle',class:'axis-label'});
   line(svg,x(time),top,x(time),bottom,{class:'guide'});
   let path=`M ${x(0)} ${y(1)}`, level=1;
   rows.slice(1,selected+1).forEach((row,i)=>{
@@ -274,27 +389,27 @@ function drawCurve(time,dropProgress=1) {
 }
 function renderTable() {
   el('life-table').innerHTML=rows.map((row,i)=>`<tr class="${i===selected?'selected':''}" data-index="${i}">
-    <td><button type="button" class="row-button" aria-label="Week ${row.time}${i===0?', baseline':''}" aria-pressed="${i===selected}">${row.time}</button></td>
+    <td><button type="button" class="row-button" aria-label="${t('rowLabel')(row.time,i===0)}" aria-pressed="${i===selected}">${row.time}</button></td>
     <td>${row.n}</td><td>${row.d}</td><td>${row.c}</td><td class="${i>selected?'unrevealed':''}">${i<=selected?percent(1-row.d/row.n):'—'}</td><td class="${i>selected?'unrevealed':''}">${i<=selected?percent(row.s):'—'}</td></tr>`).join('');
 }
 function renderText() {
   const row=rows[selected];
-  el('time-label').innerHTML=`Week ${row.time} <span class="step">${selected+1} / ${rows.length}</span>`;
-  el('risk-label').innerHTML=`<strong>${row.n} at risk</strong> just before week ${row.time}`;
+  el('time-label').innerHTML=`${t('week')(row.time)} <span class="step">${selected+1} / ${rows.length}</span>`;
+  el('risk-label').innerHTML=t('riskLabel')(row.n,row.time);
   el('survival-label').innerHTML=`Ŝ(${row.time}) = <strong>${percent(row.s)}</strong>`;
   if(selected===0) {
-    el('equation').innerHTML='Ŝ(0) = <span class="answer">100.0%</span>';
-    el('calc-note').textContent=`All ${patients.length} patients start under observation.`;
-    el('risk-change').innerHTML=`<strong>${patients.length}</strong> at risk at baseline`;
+    el('equation').innerHTML=`Ŝ(0) = <span class="answer">${percent(1)}</span>`;
+    el('calc-note').textContent=t('baselineNote')(patients.length);
+    el('risk-change').innerHTML=t('baselineRisk')(patients.length);
   } else {
     el('equation').innerHTML=`<span>Ŝ(${row.time}) = ${percent(row.before)} ×</span><span>(1 −</span><span class="fraction"><span>${row.d}</span><span>${row.n}</span></span><span>) =</span><span class="answer">${percent(row.s)}</span>`;
-    el('calc-note').textContent=row.d?`${row.d===1?'1 death':row.d+' tied deaths'} among ${row.n} at risk${row.c?`; ${row.c} censored`:''}.`:`${row.c} censored · no death · survival stays the same.`;
-    el('risk-change').innerHTML=`<strong>${row.n} − ${row.d} − ${row.c} = ${row.remaining}</strong><br>under observation after week ${row.time}`;
+    el('calc-note').textContent=row.d?t('deathNote')(row.d,row.n,row.c):t('censorNote')(row.c);
+    el('risk-change').innerHTML=`<strong>${row.n} − ${row.d} − ${row.c} = ${row.remaining}</strong><br>${t('remaining')(row.time)}`;
   }
   el('previous').disabled=selected===0;
   el('next').disabled=selected===rows.length-1;
   el('restart').disabled=selected===0&&!playback;
-  el('announcement').textContent=`Week ${row.time}. ${row.n} at risk just before this time, ${row.d} deaths, ${row.c} censored. Survival ${percent(row.s)}. ${row.remaining} remain under observation.`;
+  el('announcement').textContent=t('announcement')(row.time,row.n,row.d,row.c,percent(row.s),row.remaining);
 }
 // Anchor the calculation callout under the selected row, or above it near the end of the table.
 function placeCalculation() {
@@ -329,13 +444,13 @@ function selectRow(index,animate=true) {
 function stop() {
   if(playback) clearInterval(playback);
   playback=null;
-  el('play').textContent='Play';el('play').setAttribute('aria-pressed','false');
+  el('play').textContent=t('play');el('play').setAttribute('aria-pressed','false');
   el('restart').disabled=selected===0;
 }
 function togglePlay() {
   if(playback) {stop();cancelAnimation();drawFollow(rows[selected].time);drawCurve(rows[selected].time);return;}
   if(selected===rows.length-1) selectRow(0,false);
-  el('play').textContent='Pause';el('play').setAttribute('aria-pressed','true');
+  el('play').textContent=t('pause');el('play').setAttribute('aria-pressed','true');
   playback=setInterval(()=>{
     if(selected<rows.length-1) selectRow(selected+1);
     else stop();
@@ -359,9 +474,10 @@ document.addEventListener('keydown',event=>{
 });
 el('fullscreen').addEventListener('click',async()=>{
   try {if(document.fullscreenElement) await document.exitFullscreen();else await document.documentElement.requestFullscreen();}
-  catch {el('fullscreen').textContent='Use browser full screen';}
+  catch {el('fullscreen').textContent=t('fullscreenFallback');}
 });
-document.addEventListener('fullscreenchange',()=>{el('fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen';});
+function fullscreenLabel() { el('fullscreen').textContent=t(document.fullscreenElement?'exitFullscreen':'fullscreen'); }
+document.addEventListener('fullscreenchange',fullscreenLabel);
 document.addEventListener('visibilitychange',()=>{if(document.hidden) stop();});
 
 // Header explanations are available on hover, keyboard focus, and touch.
@@ -403,6 +519,28 @@ el('problem-link').addEventListener('click',event=>{
   event.preventDefault();stop();hideHelp();el('problem-description').showModal();
 });
 
+function setLanguage(code) {
+  lang=code;
+  document.documentElement.lang=code;
+  document.title=t('pageTitle');
+  document.querySelectorAll('[data-i18n]').forEach(node=>{node.innerHTML=t(node.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(node=>node.setAttribute('aria-label',t(node.dataset.i18nAria)));
+  document.querySelectorAll('.lang').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.lang===code)));
+  el('play').textContent=t(playback?'pause':'play');
+  fullscreenLabel();
+}
+document.querySelector('.languages').addEventListener('click',event=>{
+  const button=event.target.closest('.lang');
+  if(!button||button.dataset.lang===lang) return;
+  hideHelp();setLanguage(button.dataset.lang);
+  try { localStorage.setItem('km-lang',lang); } catch {}
+  const url=new URL(location.href);
+  if(lang==='en') url.searchParams.delete('lang'); else url.searchParams.set('lang',lang);
+  history.replaceState(null,'',url);
+  cancelAnimation();renderTable();renderText();placeCalculation();drawFollow(rows[selected].time);drawCurve(rows[selected].time);
+});
+
+setLanguage(lang);
 new ResizeObserver(()=>{cancelAnimation();placeCalculation();drawFollow(rows[selected].time);drawCurve(rows[selected].time);}).observe(document.querySelector('.board'));
 selectRow(0,false);
 </script>
